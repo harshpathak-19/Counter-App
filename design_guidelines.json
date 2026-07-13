@@ -1,0 +1,168 @@
+{
+  "app_name": "NaamSmaran",
+  "personality": "8 Hand-Drawn / Journal infused with warm saffron and gold accents",
+  "personality_one_liner": "A tactile, grounded, and deeply calming spiritual space that feels like a sacred personal diary.",
+  "color": {
+    "surface": "#FFFDF9",
+    "onSurface": "#3B2E24",
+    "surfaceSecondary": "#F5EBE1",
+    "onSurfaceSecondary": "#3B2E24",
+    "surfaceTertiary": "#EADDCB",
+    "onSurfaceTertiary": "#3B2E24",
+    "surfaceInverse": "#29211B",
+    "onSurfaceInverse": "#FFFDF9",
+    "brand": "#E57A00",
+    "brandPrimary": "#E57A00",
+    "onBrandPrimary": "#FFFFFF",
+    "brandSecondary": "#D4AF37",
+    "onBrandSecondary": "#29211B",
+    "brandTertiary": "#FDE8D1",
+    "onBrandTertiary": "#8C4A00",
+    "success": "#4A7C59",
+    "onSuccess": "#FFFFFF",
+    "warning": "#D4AF37",
+    "onWarning": "#29211B",
+    "error": "#C25953",
+    "onError": "#FFFFFF",
+    "info": "#A89B8C",
+    "onInfo": "#FFFFFF",
+    "border": "#EADDCB",
+    "borderStrong": "#C2A384",
+    "divider": "#EADDCB"
+  },
+  "typography": {
+    "displayFontFamily": "Fraunces",
+    "textFontFamily": "DM Sans",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24,
+      "3xl": 32,
+      "4xl": 48
+    }
+  },
+  "spacing": {
+    "rule": "Generous organic padding. Give components breathing room to maintain a calm, uncrowded layout.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 8,
+    "md": 16,
+    "lg": 24,
+    "pill": 999
+  },
+  "shadow_tier": "0",
+  "navigation": "bottom_tabs",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": "false",
+    "do's": [
+      "Use solid warm-tinted surfaces (surfaceSecondary, surfaceTertiary) to create depth instead of blur, matching the organic journal aesthetic."
+    ],
+    "dont's": [
+      "Avoid heavy frosted glass or translucent overlays which conflict with the earthy, tactile theme."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Jaap (Home)",
+      "purpose": "Core screen where the user selects a deity, taps the massive japa counter, and tracks their 108 mala progress.",
+      "states": {
+        "loading": "Centered soft saffron spinner.",
+        "empty": "Prompt to 'Begin your daily chanting' with a warm hand-drawn illustration.",
+        "error": "Failed to sync count. Retry button."
+      },
+      "layout": "Top: Deity Selector (horizontal scroll of rounded avatar cards containing real images of deities with gradient-to-dark scrims). Center: Massive circular tap target taking up 40% of the screen height. Wrapped around it is an SVG circular progress ring tracking out of 108. The main button uses `brandPrimary`. Below: 'Streak' and 'Total Count' stats displayed in clean, large typography using the text font, anchored by subtle dividers."
+    },
+    {
+      "name": "Tracker",
+      "purpose": "Brahmacharya/discipline daily check-in with a visual calendar heatmap.",
+      "states": {
+        "loading": "Skeleton grid representing the calendar.",
+        "empty": "No tracking data yet. Large primary CTA 'Check in for today'.",
+        "error": "Unable to load calendar. Retry."
+      },
+      "layout": "Top: Large Fraunces headline for current streak count. Center: A GitHub-style calendar heatmap showing discipline consistency over the month (use small rounded squares colored from surfaceTertiary to brandPrimary based on intensity/success). Bottom: Month-at-a-glance stats (success days vs. relapses) in simple 2-column cards."
+    },
+    {
+      "name": "Insights",
+      "purpose": "Analytics dashboard visualizing japa counts per deity and combined progress.",
+      "states": {
+        "loading": "Skeleton bar charts.",
+        "empty": "Complete your first mala to see insights.",
+        "error": "Error fetching stats."
+      },
+      "layout": "Top: Segmented pill control (All, Krishna, Shiva, Hanuman, etc.). Center: A clean bar chart or smooth line chart tracking daily count volumes. Keep axes minimal and rely on tooltips/labels. Bottom list: Milestone achievements (e.g., 100 malas) displayed as gold (brandSecondary) bordered cards with icons."
+    },
+    {
+      "name": "Settings",
+      "purpose": "Manage app preferences like Language and Reminders.",
+      "states": {
+        "loading": "Standard spinner.",
+        "empty": "N/A",
+        "error": "N/A"
+      },
+      "layout": "Standard list view with tactile rounded list rows (surfaceSecondary). Include a bilingual toggle switch (Hindi/English) prominently at the top. Below: Daily reminder time picker and notification toggles."
+    }
+  ],
+  "images": {
+    "deity_radha_krishna": {
+      "url": "https://images.pexels.com/photos/25398353/pexels-photo-25398353.jpeg",
+      "alt": "Radha Krishna decorated deity"
+    },
+    "deity_shiva": {
+      "url": "https://images.unsplash.com/photo-1609609830354-8f615d61b9c8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxsb3JkJTIwc2hpdmF8ZW58MHx8fHwxNzgzOTU2NTQ1fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "Lord Shiva statue"
+    },
+    "deity_hanuman": {
+      "url": "https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwxfHxsb3JkJTIwaGFudW1hbnxlbnwwfHx8fDE3ODM5NTY1NDR8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Lord Hanuman statue"
+    },
+    "deity_krishna": {
+      "url": "https://images.pexels.com/photos/16354577/pexels-photo-16354577.jpeg",
+      "alt": "Lord Krishna statue"
+    },
+    "custom_mantra_bg": {
+      "url": "https://images.unsplash.com/photo-1726501604891-19fb7f7cd37b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxoaW5kdSUyMHRlbXBsZSUyMGFyY2hpdGVjdHVyZSUyMGFic3RyYWN0fGVufDB8fHx8MTc4MjI4MjIxMHww&ixlib=rb-4.1.0&q=85",
+      "alt": "Hindu temple abstract"
+    }
+  },
+  "haptics": {
+    "tap_japa_button": "ImpactFeedbackStyle.Medium",
+    "mala_completed_108": "NotificationFeedbackType.Success",
+    "deity_select": "ImpactFeedbackStyle.Light",
+    "tracker_check_in": "NotificationFeedbackType.Success",
+    "tab_change": "ImpactFeedbackStyle.Light"
+  },
+  "instructions_to_main_agent": [
+    "No indigo, violet, or blue colors allowed. Stick strictly to the warm saffron, temple gold, and soft cream palette.",
+    "Implement the 'Jaap' counter button as a massive, tactile circular area at the center of the screen, ensuring it is very easy to tap blindly without looking at the screen.",
+    "Wrap an SVG circular progress indicator around the main japa button using `react-native-svg` and `react-native-reanimated` to track the 108 counts of a mala smoothly.",
+    "Use Haptic feedback critically: `Medium` impact on every single tap of the counter, and `Success` notification feedback when a mala (108 count) is completed.",
+    "The Heatmap calendar should use grid views mapped to the user's data; color the days incrementally from `surfaceTertiary` (empty/0) up to `brandPrimary` (max intensity).",
+    "Use real images for the deities on the top horizontal selector list. Apply a gradient-to-dark scrim if you overlay text on these images.",
+    "Maintain the tactile 'journal' aesthetic. Avoid heavy glassmorphism/blurs and stick to solid surface offsets (e.g., surfaceSecondary on surface) with 0 shadow and subtle borders.",
+    "Add the text translation toggle functionality for Hindi/English right from the start in the Settings screen.",
+    "Include a 'Custom Mantra' option in the deity selector that uses the abstract temple image provided."
+  ]
+}
