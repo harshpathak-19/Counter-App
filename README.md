@@ -14,12 +14,7 @@ Built for devotees who wish to count their daily japa of Radha Rani, Krishna ji,
 - Mala counter (cycles of 108) with haptic feedback on completion
 - Handwritten Naam Jaap — write the name by hand on a canvas; each entry adds to your count
 - Daily, streak, and lifetime count tracking
-
-### 🧘 Brahmacharya Tracker
-- Daily discipline check-in (Safal / Punaragaman)
-- Calendar heatmap view (last 17 weeks)
-- Streak tracking for consecutive successful days
-
+- 
 ### 📊 Analytics & Insights
 - Calendar heatmap of daily jaap intensity
 - Per-deity progress graphs
@@ -90,13 +85,6 @@ Counter-App/
 ├── test_result.md        # Latest test results summary
 └── README.md
 ```
-
-*(Exact contents may vary — see the live repo for the current structure.)*
-
----
-
-## 🚀 Getting Started
-
 ### Prerequisites
 - Node.js and npm/yarn
 - Python 3.10+
@@ -140,13 +128,5 @@ Currently in active development. Core features (counter, Brahmacharya tracker, c
 ## 🤝 Contributing
 
 This is a devotional project built with love for the bhakti community. Contributions — bug fixes, UI improvements, new features — are welcome. Feel free to fork the repo and open a pull request, or reach out directly.
-
----
-
-## 📄 License
-
-*(Add your preferred license here — e.g., MIT, or "All rights reserved" if you'd like to keep it private/proprietary.)*
-
----
 
 **Radhe Radhe 🙏**
