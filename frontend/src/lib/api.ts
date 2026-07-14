@@ -56,6 +56,16 @@ export type Reminder = {
   notification_ids: string[];
 };
 
+export type Video = {
+  id: string;
+  title: string;
+  video_url: string;
+  platform: "youtube" | "instagram";
+  thumbnail_url?: string | null;
+  category: string;
+  upload_date: string;
+};
+
 export const api = {
   listDeities: (guest_id: string) =>
     req<Deity[]>(`/deities?guest_id=${encodeURIComponent(guest_id)}`),
@@ -96,5 +106,29 @@ export const api = {
   deleteReminder: (id: string, guest_id: string) =>
     req<{ deleted: boolean }>(`/reminders/${id}?guest_id=${guest_id}`, {
       method: "DELETE",
+    }),
+  listVideos: (category?: string) =>
+    req<Video[]>(
+      `/videos${category && category !== "all" ? `?category=${encodeURIComponent(category)}` : ""}`
+    ),
+  videoCategories: () =>
+    req<{ categories: string[] }>(`/videos/categories`),
+  createVideo: (body: {
+    admin_password: string;
+    title: string;
+    video_url: string;
+    platform: "youtube" | "instagram";
+    thumbnail_url?: string | null;
+    category: string;
+  }) => req<Video>(`/videos`, { method: "POST", body: JSON.stringify(body) }),
+  deleteVideo: (id: string, admin_password: string) =>
+    req<{ deleted: boolean }>(
+      `/videos/${id}?admin_password=${encodeURIComponent(admin_password)}`,
+      { method: "DELETE" }
+    ),
+  adminCheck: (admin_password: string) =>
+    req<{ ok: boolean }>(`/admin/check`, {
+      method: "POST",
+      body: JSON.stringify({ admin_password }),
     }),
 };

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
+import { useRouter, useFocusEffect } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -33,6 +34,7 @@ const MALA_SIZE = 108;
 
 export default function JaapScreen() {
   const { t, lang } = useI18n();
+  const router = useRouter();
   const [guestId, setGuestId] = useState<string>("");
   const [deities, setDeities] = useState<Deity[]>([]);
   const [selected, setSelected] = useState<Deity | null>(null);
@@ -66,6 +68,12 @@ export default function JaapScreen() {
       // offline / server down — silently continue
     }
   }, [selected]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (guestId) refresh(guestId);
+    }, [guestId, refresh])
+  );
 
   const syncPending = useCallback(async () => {
     if (!guestId || !selected || pending.current <= 0) return;
@@ -188,14 +196,26 @@ export default function JaapScreen() {
           </Text>
           <Text style={styles.guestNote}>{t.guest_mode}</Text>
         </View>
-        <Pressable
-          testID="add-custom-btn"
-          onPress={() => setAddOpen(true)}
-          style={styles.addBtn}
-        >
-          <Ionicons name="add" size={18} color={colors.onBrandPrimary} />
-          <Text style={styles.addBtnText}>{t.add_custom}</Text>
-        </Pressable>
+        <View style={styles.headerActions}>
+          <Pressable
+            testID="open-write-btn"
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/write");
+            }}
+            style={styles.writeBtn}
+          >
+            <Ionicons name="create-outline" size={16} color={colors.brandPrimary} />
+          </Pressable>
+          <Pressable
+            testID="add-custom-btn"
+            onPress={() => setAddOpen(true)}
+            style={styles.addBtn}
+          >
+            <Ionicons name="add" size={18} color={colors.onBrandPrimary} />
+            <Text style={styles.addBtnText}>{t.add_custom}</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Deity selector */}
@@ -400,6 +420,20 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   guestNote: { fontSize: 11, color: colors.muted, marginTop: 2 },
+  headerActions: { flexDirection: "row", alignItems: "center", gap: 6 },
+  writeBtn: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.brandTertiary,
+    borderRadius: radius.pill,
+  },
+  writeBtnText: {
+    color: colors.brandPrimary,
+    fontWeight: "700",
+    fontSize: 12,
+  },
   addBtn: {
     flexDirection: "row",
     alignItems: "center",

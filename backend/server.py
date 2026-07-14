@@ -97,6 +97,31 @@ class ReminderCreate(BaseModel):
     notification_ids: List[str] = Field(default_factory=list)
 
 
+class VideoContent(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    video_url: str
+    platform: Literal["youtube", "instagram"]
+    thumbnail_url: Optional[str] = None
+    category: str
+    upload_date: str = Field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+    )
+
+
+class VideoCreate(BaseModel):
+    admin_password: str
+    title: str
+    video_url: str
+    platform: Literal["youtube", "instagram"]
+    thumbnail_url: Optional[str] = None
+    category: str
+
+
+class AdminCheck(BaseModel):
+    admin_password: str
+
+
 # ----------------------------- SEED -----------------------------
 
 DEFAULT_DEITIES: List[dict] = [
@@ -159,6 +184,54 @@ async def seed_deities():
         return
     for d in DEFAULT_DEITIES:
         await db.deities.update_one({"id": d["id"]}, {"$set": d}, upsert=True)
+
+
+SEED_VIDEOS = [
+    {
+        "title": "Hare Krishna Maha Mantra",
+        "video_url": "https://www.youtube.com/watch?v=sO14X3iCVIw",
+        "platform": "youtube",
+        "thumbnail_url": "https://img.youtube.com/vi/sO14X3iCVIw/hqdefault.jpg",
+        "category": "Kirtan",
+    },
+    {
+        "title": "Achyutam Keshavam Krishna Damodaram",
+        "video_url": "https://www.youtube.com/watch?v=TwUvpFTuwvA",
+        "platform": "youtube",
+        "thumbnail_url": "https://img.youtube.com/vi/TwUvpFTuwvA/hqdefault.jpg",
+        "category": "Kirtan",
+    },
+    {
+        "title": "Shiv Tandav Stotram",
+        "video_url": "https://www.youtube.com/watch?v=jhQpXaTS3Do",
+        "platform": "youtube",
+        "thumbnail_url": "https://img.youtube.com/vi/jhQpXaTS3Do/hqdefault.jpg",
+        "category": "Satsang",
+    },
+    {
+        "title": "Hanuman Chalisa",
+        "video_url": "https://www.youtube.com/watch?v=AETFvQonfV8",
+        "platform": "youtube",
+        "thumbnail_url": "https://img.youtube.com/vi/AETFvQonfV8/hqdefault.jpg",
+        "category": "Kirtan",
+    },
+    {
+        "title": "Krishna Leela — Bal Krishna Stories",
+        "video_url": "https://www.youtube.com/watch?v=Kn9zPHRGY9E",
+        "platform": "youtube",
+        "thumbnail_url": "https://img.youtube.com/vi/Kn9zPHRGY9E/hqdefault.jpg",
+        "category": "Krishna Leela",
+    },
+]
+
+
+async def seed_videos():
+    existing = await db.videos.count_documents({})
+    if existing > 0:
+        return
+    for v in SEED_VIDEOS:
+        video = VideoContent(**v)
+        await db.videos.insert_one(video.dict())
 
 
 # ----------------------------- HELPERS -----------------------------
@@ -364,6 +437,59 @@ async def delete_reminder(reminder_id: str, guest_id: str):
     return {"deleted": True}
 
 
+# ----------------------------- VIDEOS -----------------------------
+
+def _admin_ok(pw: Optional[str]) -> bool:
+    admin_pw = os.environ.get("ADMIN_PASSWORD", "")
+    return bool(admin_pw) and pw == admin_pw
+
+
+@api_router.post("/admin/check")
+async def admin_check(payload: AdminCheck):
+    if not _admin_ok(payload.admin_password):
+        raise HTTPException(status_code=401, detail="Invalid admin password")
+    return {"ok": True}
+
+
+@api_router.get("/videos", response_model=List[VideoContent])
+async def list_videos(category: Optional[str] = None):
+    query: dict = {}
+    if category and category != "all":
+        query["category"] = category
+    docs = (
+        await db.videos.find(query, {"_id": 0})
+        .sort("upload_date", -1)
+        .to_list(500)
+    )
+    return [VideoContent(**d) for d in docs]
+
+
+@api_router.get("/videos/categories")
+async def video_categories():
+    cats = await db.videos.distinct("category")
+    return {"categories": sorted([c for c in cats if c])}
+
+
+@api_router.post("/videos", response_model=VideoContent)
+async def create_video(payload: VideoCreate):
+    if not _admin_ok(payload.admin_password):
+        raise HTTPException(status_code=401, detail="Invalid admin password")
+    data = payload.dict(exclude={"admin_password"})
+    video = VideoContent(**data)
+    await db.videos.insert_one(video.dict())
+    return video
+
+
+@api_router.delete("/videos/{video_id}")
+async def delete_video(video_id: str, admin_password: str):
+    if not _admin_ok(admin_password):
+        raise HTTPException(status_code=401, detail="Invalid admin password")
+    result = await db.videos.delete_one({"id": video_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Not found")
+    return {"deleted": True}
+
+
 app.include_router(api_router)
 
 app.add_middleware(
@@ -384,6 +510,7 @@ logger = logging.getLogger(__name__)
 @app.on_event("startup")
 async def on_startup():
     await seed_deities()
+    await seed_videos()
 
 
 @app.on_event("shutdown")

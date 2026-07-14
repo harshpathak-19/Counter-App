@@ -47,6 +47,16 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="videos"
+        options={{
+          title: t.tab_videos,
+          tabBarTestID: "tab-videos",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="play-circle-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="insights"
         options={{
           title: t.tab_insights,

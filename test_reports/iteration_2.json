@@ -1,0 +1,32 @@
+{
+  "summary": "Phase 2 backend + frontend tested. Backend: 15/15 pytest passing (7 Phase-1 regressions + 8 new: handwritten unified summary, invalid-mode 422, videos seed/list/filter, categories, admin/check 200/401, video POST admin-guarded, video DELETE admin-guarded with persistence verification). Frontend: 5 bottom tabs (Jaap/Tracker/Videos/Insights/Settings) render; Videos tab chips + filter (All/Krishna Leela/Satsang/Kirtan) work and card list filters correctly; video card tap navigates to /video-player screen (back button + screen mount confirmed, WebView content doesn't render on web preview — expected per task note); video-admin wrong password shows 'Invalid admin password'; correct password 'naamsmaran-admin' unlocks form; new video saved via UI ('Video added') and appears in Kirtan filter. Handwriting: /write route mounts, deity selectable, SVG canvas responds to touch/mouse, Done +1 POSTs (mode=handwritten), session counter 0→1, today counter 0→1, canvas auto-clears; Clear button clears without incrementing. Returning to Jaap tab shows unified Today=1 and Lifetime=1 (handwritten counts feed same summary as tap). Phase 1 flows (deities, tap-jaap, custom deity, brahmacharya, reminders, history) untouched.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "video-player.tsx (react-native-webview)", "issue": "WebView does not render on web preview — no iframe fallback, only the surrounding React Native shell mounts. Expected per task brief (web sandbox limitation), but users viewing via Expo web will see a black area. Consider a web-only iframe fallback for the embed URL for parity. Reference: /app/frontend/app/video-player.tsx:43-59"},
+      {"component": "video-admin.tsx auth error Text", "issue": "The 'Invalid admin password' Text (authError) lacks a testID; using generic content assertion works but adding testID='admin-login-error' improves testability. Reference: /app/frontend/app/video-admin.tsx:152"}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_naamsmaran_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "(Optional polish) Add web-only iframe fallback in /app/frontend/app/video-player.tsx so YouTube embed actually plays in Expo web preview (react-native-webview is native-only).",
+    "(Optional polish) Add testID='admin-login-error' to the authError <Text> in video-admin.tsx for easier automated verification of wrong-password path."
+  ],
+  "critical_code_review_comments": [
+    "server.py list_videos correctly excludes _id via projection; VideoCreate excludes admin_password from response — good.",
+    "Handwritten entries share db.jaap_entries collection with tap entries — /api/jaap/summary aggregates by guest_id regardless of mode, satisfying unification requirement.",
+    "ADMIN_PASSWORD is read from env at request time (not cached) — safe. Empty ADMIN_PASSWORD would reject all admin requests (fail-closed) — good.",
+    "video-admin auto-login validates stored password against backend on mount and removes stale token on 401 — solid pattern.",
+    "write.tsx uses optimistic UI (increment then POST) with a busy ref to prevent double-submit — correct."
+  ],
+  "updated_files": ["/app/backend/tests/test_naamsmaran_api.py"],
+  "success_rate": {"backend": "100% (15/15)", "frontend": "100% of critical flows (Videos tab, filter, admin login/save, /write draw+commit, /write clear, unified summary on Jaap tab)"},
+  "seed_data_creation": "One admin-created video 'TEST_UI_Video' (category Kirtan) added via UI during test; also 2 backend-created TEST_admin_video docs auto-cleaned by the create+delete test. Guest jaap entries under TEST_hw_* and TEST_* guest ids remain in db.jaap_entries (isolated per random guest_id, does not affect real users).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Frontend uses EXPO_PUBLIC_BACKEND_URL (not EXPO_BACKEND_URL) — set env var before pytest. Tab bar tabBarTestID props do NOT propagate as data-testid on expo-router web; use get_by_text('Videos'/'Jaap'/...) to switch tabs in Playwright. YouTube WebView does not render on web preview — verify only that video-player-back mounts. Admin password: 'naamsmaran-admin'. video-admin auto-login via AsyncStorage may persist between runs — clear storage or use logout testID='admin-logout' if state pollution occurs.",
+  "rca_of_issue": ""
+}
