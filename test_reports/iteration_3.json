@@ -1,0 +1,35 @@
+{
+  "summary": "Bottom tab bar bug fix VERIFIED on Expo web preview (mobile viewport 375x667). All 5 tabs (Jaap, Tracker, Videos, Insights, Settings) are tappable and correctly navigate to their target screens. Executed 3 tap sequences: (1) in-order Jaap→Tracker→Videos→Insights→Settings — 5/5 pass; (2) rapid alternating Jaap→Videos→Tracker→Settings→Insights — 5/5 pass; (3) double-tap same tab (Jaap, Videos) — no screen breakage. Active-tint check with Videos active: Videos label color = rgb(229, 122, 0) = brandPrimary, other four labels = rgb(140, 122, 107) = muted — correct highlight behaviour. Content not hidden: on Jaap screen the stat cards (Today/Streak/Lifetime) bottom=595px sit above tab-bar top=607px (12px gap on 667px viewport — clear). Regression: /write route reached from Jaap header pencil and /video-admin route reached from Videos '+' button; go-back returns to the correct tab and all 5 tabs still work post-regression. testID props on Tabs.Screen (tab-jaap, tab-tracker, tab-videos, tab-insights, tab-settings) DO NOT propagate to DOM on RN Web (known limitation confirmed in iteration_2 note) — used get_by_text label fallback as advised. No red-screen errors. Two pre-existing non-blocking console warnings noticed: (a) props.pointerEvents deprecated (celebrate view in index.tsx:297), (b) Invalid DOM property `transform-origin` (should be transformOrigin) — unrelated to tab fix.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "(tabs)/_layout.tsx", "issues": ["On web preview with 0 bottom safe-area inset, tab-bar total height is only 60px and labels sit at y≈653 on a 667px viewport (~14px from bottom edge). Adequate but tight. On real Android/iOS with insets the padding correctly grows via insets.bottom."]}
+    ],
+    "react_native_issues": [
+      {"component": "app/(tabs)/index.tsx celebrate view", "issue": "Uses deprecated `pointerEvents` prop instead of `style.pointerEvents`. Console warning: 'props.pointerEvents is deprecated. Use style.pointerEvents'. Reference: /app/frontend/app/(tabs)/index.tsx:297"},
+      {"component": "unknown component (RN Web)", "issue": "Invalid DOM property `transform-origin` — should be `transformOrigin` (camelCase). Pre-existing warning, likely from a StyleSheet.create somewhere. Not user-blocking."},
+      {"component": "expo-router Tabs (RN Web)", "issue": "`tabBarTestID` on Tabs.Screen is NOT emitted as data-testid on web preview. Test scripts must fall back to visible label. Consider setting testID on a wrapping element or filing upstream expo-router web tracking issue."}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_naamsmaran_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "(Optional) Replace `pointerEvents=\"none\"` on the celebrate <Animated.View> in /app/frontend/app/(tabs)/index.tsx:297 with `style={{ pointerEvents: 'none' }}` (or the shared style) to silence the RN Web deprecation warning.",
+    "(Optional) Grep the codebase for `transform-origin` and rename to `transformOrigin` to silence the Invalid DOM property warning on web.",
+    "(Optional) On tabBar labels being close to the bottom edge on web (14px margin), consider bumping `barContentHeight` to 64 or increasing tabBarLabelStyle.marginBottom slightly for better breathing room on desktop/web preview."
+  ],
+  "critical_code_review_comments": [
+    "(tabs)/_layout.tsx correctly uses useSafeAreaInsets() and adds Math.max(insets.bottom, 8) for Android — fixes the reported gesture-bar overlap.",
+    "tabBarHideOnKeyboard: true added — good UX on Android when TextInput opens keyboard.",
+    "tabBarAccessibilityLabel is set per tab — improves a11y.",
+    "tabBarTestID is set but does not propagate on web — not a bug, but limits Playwright testing on web preview (documented in iteration_2)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (frontend-only scope)", "frontend": "100% (all 5 tabs navigate; both regression routes reachable; active tint correct; stat cards not clipped)"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "For (tabs) navigation testing on Expo web preview: tabBarTestID does NOT emit data-testid. Use page.get_by_text('Jaap'/'Tracker'/'Videos'/'Insights'/'Settings', exact=True).last.click(force=True). Screen-render indicators used: Jaap=[data-testid=\"jaap-tap-btn\"], Tracker=text matching /Weekly|Monthly|Streak|Calendar|Days/, Videos=[data-testid=\"video-admin-btn\"], Insights=text matching /Total|Weekly|Monthly|Progress|Best/, Settings=text matching /Language|Reminder|Brahmacharya|Notifications|About/. Tab bar bottom sits at y≈607 on 375x667 viewport. Admin password: 'naamsmaran-admin'.",
+  "rca_of_issue": "Root cause: previous (tabs)/_layout.tsx used a fixed height:68 without useSafeAreaInsets(). On Android edge-to-edge and iOS home-indicator devices, the OS gesture bar overlapped the bottom portion of the tab-hit area, causing missed / wrong-tab taps. Fix: switched to insets-aware sizing — height = 60 + insets.bottom (min 8px on Android), paddingBottom = insets.bottom — so tab hit-area now sits ENTIRELY above the OS gesture bar. Added tabBarHideOnKeyboard, tabBarItemStyle padding, and per-tab tabBarAccessibilityLabel. Verified on web preview: all 5 tabs tap successfully in-order, in random rapid order, and on double-tap; active tint switches correctly; screen content above tab bar; regression routes /write and /video-admin still work with back navigation."
+}
