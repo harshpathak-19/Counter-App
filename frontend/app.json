@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "NaamSmaran",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,15 +10,24 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.emergent.bhaktidaily.fhcrgp"
+      "bundleIdentifier": "com.emergent.bhaktidaily.fhcrgp",
+      "infoPlist": {
+        "NSUserNotificationUsageDescription": "Send japa reminders throughout the day"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000000"
+        "backgroundColor": "#FFFDF9"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.emergent.bhaktidaily.fhcrgp"
+      "package": "com.emergent.bhaktidaily.fhcrgp",
+      "permissions": [
+        "SCHEDULE_EXACT_ALARM",
+        "USE_EXACT_ALARM",
+        "POST_NOTIFICATIONS",
+        "VIBRATE"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -33,7 +42,13 @@
           "image": "./assets/images/splash-image.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#000000"
+          "backgroundColor": "#FFFDF9"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#E57A00"
         }
       ]
     ],
