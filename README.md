@@ -1,12 +1,28 @@
 # 🕉️ Bhakti Naam Jaap
 
-A devotional Naam Jaap (chanting) counter mobile app — chant, track, and grow spiritually.
+A devotional Naam Jaap counter app — chant, track your streaks, and grow spiritually with Radha Rani, Krishna ji, Shiv ji, Hanuman ji & more 🙏
 
-Built for devotees who wish to count their daily japa of Radha Rani, Krishna ji, Shiv ji, Hanuman ji, and Shri Radhavallabh Harivansh, while tracking discipline (Brahmacharya), receiving reminders, and engaging with devotional media.
+## 📖 About
+
+**Bhakti Naam Jaap** is a mobile app built for devotees who wish to count their daily japa (chanting) of Radha Rani, Krishna ji, Shiv ji, Hanuman ji, and Shri Radhavallabh Harivansh — or any custom mantra of their choice.
+
+Beyond simple counting, the app helps devotees stay consistent in their spiritual practice through streak tracking, a Brahmacharya discipline tracker, daily reminders, an AI chatbot ("Naam-Guru") for questions about Radha Rani and the teachings of Shri Premanand Govind Sharan Ji Maharaj, and a dedicated space for devotional videos and podcasts.
+
+Built using React Native, FastAPI, and MongoDB — designed to work smoothly offline, with full Hindi and English support.
 
 ---
 
-## ✨ Features
+## 📸 Screenshots
+
+| Naam Jaap Counter | Brahmacharya Tracker |
+|---|---|
+| ![Jaap Counter](Counter.jpeg) | ![Brahmacharya Tracker](Tracker.jpeg) |
+
+| Naam-Guru Chatbot | Bhakti Media |
+|---|---|
+| ![Chatbot](ChatBot.jpeg) | ![Media](Media.jpeg) |
+
+
 
 ### 🙏 Naam Jaap Counter
 - Tap-to-count chanting for 5 deities: Radha Rani, Krishna ji, Shiv ji, Hanuman ji, Radhavallabh Shri Harivansh
@@ -14,7 +30,12 @@ Built for devotees who wish to count their daily japa of Radha Rani, Krishna ji,
 - Mala counter (cycles of 108) with haptic feedback on completion
 - Handwritten Naam Jaap — write the name by hand on a canvas; each entry adds to your count
 - Daily, streak, and lifetime count tracking
-- 
+
+### 🧘 Brahmacharya Tracker
+- Daily discipline check-in (Safal / Punaragaman)
+- Calendar heatmap view (last 17 weeks)
+- Streak tracking for consecutive successful days
+
 ### 📊 Analytics & Insights
 - Calendar heatmap of daily jaap intensity
 - Per-deity progress graphs
@@ -85,6 +106,13 @@ Counter-App/
 ├── test_result.md        # Latest test results summary
 └── README.md
 ```
+
+
+
+---
+
+## 🚀 Getting Started
+
 ### Prerequisites
 - Node.js and npm/yarn
 - Python 3.10+
@@ -108,8 +136,7 @@ npx expo start
 Scan the QR code with the Expo Go app to preview on your device.
 
 ### Environment Variables
-Create a `.env` file in `backend/` with:
-```
+
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 LLM_API_KEY=your_llm_api_key
@@ -128,5 +155,8 @@ Currently in active development. Core features (counter, Brahmacharya tracker, c
 ## 🤝 Contributing
 
 This is a devotional project built with love for the bhakti community. Contributions — bug fixes, UI improvements, new features — are welcome. Feel free to fork the repo and open a pull request, or reach out directly.
+
+
+---
 
 **Radhe Radhe 🙏**
